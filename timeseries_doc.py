@@ -54,7 +54,10 @@ def get_moving_average(data, steps=2):
 
     return moving_average
 
-
+def centered_moving_average(data):
+    """
+    """
+    return None
 
 supplier = [x for x in range(1,13)]
 # random
