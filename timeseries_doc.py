@@ -50,18 +50,37 @@ def get_moving_average(data, steps=2):
         avg = get_average(data_window)
         moving_average.append(avg)
 
-    moving_average = [None]*steps + moving_average
-
     return moving_average
+
+def smooth_with_moving_average(data, steps=2):
+    """ Smooth using moving average. Adds None for nonexistent values """
+    moving_average = get_moving_average(data, steps=2)
+    moving_average = [None]*steps + moving_average
+    return moving_average
+
 
 def centered_moving_average(data):
     """
+    Centered average
+    Smoothing the smoothed value
     """
-    return None
+    avg = get_moving_average(amount, steps=4)
+    avg = get_moving_average(avg, steps=2)
+    return avg
+
+def exponential_moving_average(data, alpha=None):
+    """
+    Exponential moving average
+    St = a yt-1 + (1 - a) [ayt-2 + (1 - a)St-2]
+    Multiply smoothing parameter with the last value.
+    Multiple (1-a) with previous weighted observation
+    """"
+
+
 
 supplier = [x for x in range(1,13)]
 # random
-amount = [9, 8, 9, 12, 9, 12, 11, 7, 13, 9, 11, 10]
+amount = [9, 8, 9, 12, 9, 12, 11]#, 7, 13, 9, 11, 10]
 # trend
 # amount = [x for x in range(10,130,10)]
 
@@ -71,8 +90,11 @@ amount = [9, 8, 9, 12, 9, 12, 11, 7, 13, 9, 11, 10]
 # print(mse)
 
 
-average = get_moving_average(amount, steps=5)
+# average = smooth_with_moving_average(amount, steps=5)
+#
+# plt.plot(amount, 'r', average, 'b')
+# plt.ylabel('Actual and Predicted')
+# plt.show()
 
-plt.plot(amount, 'r', average, 'b')
-plt.ylabel('Actual and Predicted')
-plt.show()
+
+print(avg)
