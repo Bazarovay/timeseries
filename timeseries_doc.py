@@ -36,14 +36,15 @@ def plot(actual,predicted):
     average_line = np.array([predicted for i in range(len(actual))])
 
     plt.plot(actual, 'r', average_line, 'b')
-    plt.ylabel('Actual and Predicted')
-    # plt.xlabel('')
+    plt.ylabel('Items sold')
+    plt.xlabel('Days')
+    plt.legend(['Actual Sales','Average Sales'])
 
     plt.show()
 
-def get_moving_average(data, steps=2):
+def get_moving_average(data, steps=3):
     """
-    Return moving average
+    Return the moving average
     """
     moving_average = []
     for i in range(0,len(data) - steps + 1):
@@ -55,7 +56,7 @@ def get_moving_average(data, steps=2):
 
 def smooth_with_moving_average(data, steps=2):
     """ Smooth using moving average. Adds None for nonexistent values """
-    moving_average = get_moving_average(data, steps=2)
+    moving_average = get_moving_average(data, steps=steps)
     moving_average = [None]*steps + moving_average
     return moving_average
 
@@ -137,18 +138,67 @@ def exponential_moving_average(data, alpha=None, future_steps=None):
 
 
     return weighted_array
-#
-# if __name__ == "__main__":
-#     supplier = [x for x in range(1,13)]
-#     # random
-#     amount = [9, 8, 9, 12, 9, 12, 11]#, 7, 13, 9, 11, 10]
-#     # trend
-#     # amount = [x for x in range(10,130,10)]
-#
-#     # average = get_average(amount)
-#     # error_per_amount = [squared_error(actual,average) for actual in amount]
-#     # mse = mean_squared_error(error_per_amount)
-#     # print(mse)
+
+def period_difference(data, period):
+    """
+    Return difference of the first period
+    """
+    period_difference = 0
+    for i in range(period):
+        period_difference += data[period + i] - data[i]
+
+    period_difference = period_difference * (1/period)
+    return period_difference
+
+def triple_exponential_smoothing(data,period=4):
+    """
+    """
+    # initializing
+    trend_factor = (1/4)*period_difference(data,period)
+
+def read_csv(filename):
+    """
+    Read csv data
+    """
+    with open(filename, 'r')
+
+if __name__ == "__main__":
+    supplier = [x for x in range(1,13)]
+    # random
+    amount = [9, 8, 9, 12, 9, 12, 11]#, 7, 13, 9, 11, 10]
+    amount = [7,6,1,8,10,9,8,11]
+    amount = [7,6,1,8,10,9,8,11,15,21,26,27,33,36,39]
+
+
+
+    # trend
+    # amount = [x for x in range(10,130,10)]
+
+    # average = get_average(amount)
+    # print(average)
+    # error_per_amount = [squared_error(actual,average) for actual in amount]
+    # print(error_per_amount)
+    # mse = mean_squared_error(error_per_amount)
+    # print(mse)
+    # plot(amount,average)
+
+    # average = smooth_with_moving_average(amount, steps=3)
+    #
+    # print(average)
+    # all_errors = []
+    # for i, val in enumerate(amount):
+    #     if average[i]:
+    #         error_val = squared_error(amount[i],average[i])
+    #         all_errors.append(error_val)
+    #
+    # mse = mean_squared_error(all_errors)
+    # print(mse)
+    #
+    # plt.plot(amount, 'r', average, 'b--')
+    # plt.ylabel('Items Sold')
+    # plt.ylabel('Days')
+    # plt.legend(['Items Sold','Moving Average'])
+    # plt.show()
 #
 #
 #     # average = smooth_with_moving_average(amount, steps=5)
@@ -188,12 +238,12 @@ def exponential_moving_average(data, alpha=None, future_steps=None):
 #     plt.show()
 
 
-new_y = [6.4,  5.6,  7.8,  8.8,  11,  11.6,  16.7,  15.3,  21.6,  22.4]
-dwema = double_exponential_moving_average(new_y,alpha=0.3623,gamma=1.0,future_steps=5)
-
-swema = smooth_with_ewma(new_y, alpha=.977,future_steps=5)
-
-plt.plot(new_y, 'r', dwema, 'b^',swema,'g--')
-plt.legend(["Actual","Double Exponential", "Single Exponential"])
-plt.ylabel('Actual and Predicted')
-plt.show()
+# new_y = [6.4,  5.6,  7.8,  8.8,  11,  11.6,  16.7,  15.3,  21.6,  22.4]
+# dwema = double_exponential_moving_average(new_y,alpha=0.3623,gamma=1.0,future_steps=5)
+#
+# swema = smooth_with_ewma(new_y, alpha=.977,future_steps=5)
+#
+# plt.plot(new_y, 'r', dwema, 'b^',swema,'g--')
+# plt.legend(["Actual","Double Exponential", "Single Exponential"])
+# plt.ylabel('Actual and Predicted')
+# plt.show()
