@@ -150,12 +150,33 @@ def period_difference(data, period):
     period_difference = period_difference * (1/period)
     return period_difference
 
+def get_seasonal_indices(data, period):
+    """
+    Return seasonal indices
+    """
+    years = len(data)/period
+    # computing the yearly mean
+    yearly_averages_list = []
+    for i in range(0,len(data),period):
+        yearly_average = sum(data[i:i + period])/period
+        yearly_averages_list.append(yearly_average)
+
+    # dividing each observation by the yearly average
+    averaged_data = []
+    for i in range(0,len(data)):
+        averaged_data.append(data[i]/yearly_averages_list[i//period])
+
+    seasonal_indices = [0]*period
+    for i in range(0,len(averaged_data)):
+        seasonal_indices[i%period] += averaged_data[i]*(1/years)
+
+    return seasonal_indices
 def triple_exponential_smoothing(data,period=4):
     """
     """
     # initializing
     trend_factor = (1/4)*period_difference(data,period)
-    print(trend_factor)
+    seasonal_indices = get_seasonal_indices(data,period)
 
 def get_sales(filename=None):
     """
@@ -180,7 +201,9 @@ if __name__ == "__main__":
     amount = [7,6,1,8,10,9,8,11,15,21,26,27,33,36,39]
 
     sale_data = get_sales(filename='sales.csv')
-    triple_exponential_smoothing(sale_data,period=4)
+    # triple_exponential_smoothing(sale_data,period=4)
+    init = get_seasonal_indices(sale_data,period=4)
+    print(init)
     # trend
     # amount = [x for x in range(10,130,10)]
 
