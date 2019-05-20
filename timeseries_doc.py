@@ -155,12 +155,22 @@ def triple_exponential_smoothing(data,period=4):
     """
     # initializing
     trend_factor = (1/4)*period_difference(data,period)
+    print(trend_factor)
 
-def read_csv(filename):
+def get_sales(filename=None):
     """
     Read csv data
     """
-    with open(filename, 'r')
+    line = "Initial Line"
+    with open(filename, 'r') as fp:
+        data = fp.readlines()
+
+    sales = []
+    for el in data:
+        sale_qt = el.split(' ')[-1].strip()
+        sales.append(int(sale_qt))
+
+    return sales
 
 if __name__ == "__main__":
     supplier = [x for x in range(1,13)]
@@ -169,8 +179,8 @@ if __name__ == "__main__":
     amount = [7,6,1,8,10,9,8,11]
     amount = [7,6,1,8,10,9,8,11,15,21,26,27,33,36,39]
 
-
-
+    sale_data = get_sales(filename='sales.csv')
+    triple_exponential_smoothing(sale_data,period=4)
     # trend
     # amount = [x for x in range(10,130,10)]
 
