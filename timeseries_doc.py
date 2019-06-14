@@ -84,11 +84,13 @@ def double_exponential_moving_average(data, alpha=None, gamma=None,future_steps=
     weighted_array = [data[0]]
     beta_array = [((data[1]-data[0]) + (data[2]-data[1]) + (data[3]-data[2]))/3]
     forecast = [weighted_array[0] + beta_array[0]]
+
     for el in data[1:]:
         weighted_obs = alpha*el + (1 - alpha)*(weighted_array[-1] + beta_array[-1])
         weighted_array.append(weighted_obs)
         beta_obs = gamma*(weighted_array[-1] - weighted_array[-2]) + (1 - gamma)*beta_array[-1]
         beta_array.append(beta_obs)
+
         forecast.append(weighted_obs + beta_obs)
 
     if future_steps:
@@ -112,21 +114,22 @@ def exponential_moving_average(data, alpha=None, future_steps=None):
     if alpha > 1 or alpha < 0:
         raise ValueError("alpha has to be between 0 and 1")
 
-    alpha_min_1 = 1 - alpha
-
-
     i = 1
+    alpha_min_1 = 1 - alpha
     weighted_array = []
     while i < len(data):
+
         weighted = 0
-        k = 0
-        while (i - k - 1) >= 1: # multiply past observations with the smoothing parameter
-            weighted += alpha_min_1**(k)*data[i - k - 1] #  (1-a)^k*yt_1 ...
-            k = k + 1
+        exp_power = 0
+        previous_element_idx = i - 1
+
+        while previous_element_idx >= 1: # multiply past observations with the smoothing parameter
+            weighted += alpha_min_1**(exp_power)*data[previous_element_idx] #  (1-a)^k*yt_1 ...
+            previous_element_idx =  previous_element_idx - 1
+            exp_power += 1
 
         weighted = alpha*weighted
         weighted += alpha_min_1**(i - 1)*data[0]
-
         weighted_array.append(weighted)
         i = i + 1
 
@@ -271,12 +274,12 @@ if __name__ == "__main__":
 #     plt.show()
 
 
-# new_y = [6.4,  5.6,  7.8,  8.8,  11,  11.6,  16.7,  15.3,  21.6,  22.4]
-# dwema = double_exponential_moving_average(new_y,alpha=0.3623,gamma=1.0,future_steps=5)
-#
+new_y = [6.4,  5.6,  7.8,  8.8,  11,  11.6,  16.7,  15.3,  21.6,  22.4]
+swema = double_exponential_moving_average(new_y,alpha=0.3623,gamma=1.0)
 # swema = smooth_with_ewma(new_y, alpha=.977,future_steps=5)
 #
-# plt.plot(new_y, 'r', dwema, 'b^',swema,'g--')
-# plt.legend(["Actual","Double Exponential", "Single Exponential"])
-# plt.ylabel('Actual and Predicted')
-# plt.show()
+#
+plt.plot(new_y, 'r',swema,'g--')
+plt.legend(["Actual", "Double Exponential"])
+plt.ylabel('Actual and Predicted')
+plt.show()
